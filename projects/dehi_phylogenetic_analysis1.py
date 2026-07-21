@@ -1,6 +1,9 @@
-"""Download the amino-acid sequence for chain A of PDB entry 3BJX.
+"""Download protein sequences for this DEHI phylogenetic analysis.
 
-The script uses the RCSB PDB REST API and writes the sequence as FASTA.
+This script can:
+
+1. Download the amino-acid sequence for chain A of PDB entry 3BJX.
+2. Download all UniProtKB amino-acid sequences matching Pfam family PF02627.
 """
 
 from __future__ import annotations
@@ -8,17 +11,21 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from urllib.error import HTTPError, URLError
+from urllib.parse import urlencode
 from urllib.request import urlopen
 
 
 PDB_ID = "3BJX"
 CHAIN_ID = "A"
-OUTPUT_FASTA = Path(__file__).with_name(f"{PDB_ID}_{CHAIN_ID}.fasta")
+PFAM_ID = "PF02627"
+PDB_OUTPUT_FASTA = Path(__file__).with_name(f"{PDB_ID}_{CHAIN_ID}.fasta")
+UNIPROT_OUTPUT_FASTA = Path(__file__).with_name(f"uniprot_{PFAM_ID}.fasta")
 RCSB_API = "https://data.rcsb.org/rest/v1/core"
+UNIPROT_API = "https://rest.uniprot.org/uniprotkb/stream"
 
 
 def fetch_json(url: str) -> dict:
-    """Fetch JSON from an RCSB API endpoint."""
+    """Fetch JSON from an API endpoint."""
     try:
         with urlopen(url, timeout=30) as response:
             return json.load(response)
@@ -26,6 +33,18 @@ def fetch_json(url: str) -> dict:
         raise RuntimeError(f"RCSB returned HTTP {exc.code} for {url}") from exc
     except URLError as exc:
         raise RuntimeError(f"Could not reach RCSB PDB at {url}: {exc.reason}") from exc
+
+
+def fetch_text(url: str) -> str:
+    """Fetch plain text from an API endpoint."""
+    try:
+        with urlopen(url, timeout=120) as response:
+            return response.read().decode("utf-8")
+    except HTTPError as exc:
+        details = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"API returned HTTP {exc.code} for {url}\n{details}") from exc
+    except URLError as exc:
+        raise RuntimeError(f"Could not reach API at {url}: {exc.reason}") from exc
 
 
 def sequence_for_chain(pdb_id: str, chain_id: str) -> str:
@@ -54,10 +73,36 @@ def write_fasta(sequence: str, output_path: Path, pdb_id: str, chain_id: str) ->
     output_path.write_text(f"{header}\n{wrapped}\n")
 
 
-def main() -> None:
+def download_pdb_chain() -> str:
     sequence = sequence_for_chain(PDB_ID, CHAIN_ID)
-    write_fasta(sequence, OUTPUT_FASTA, PDB_ID, CHAIN_ID)
-    print(f"Wrote {len(sequence)} amino acids to {OUTPUT_FASTA}")
+    write_fasta(sequence, PDB_OUTPUT_FASTA, PDB_ID, CHAIN_ID)
+    print(f"Wrote {len(sequence)} amino acids to {PDB_OUTPUT_FASTA}")
+    return sequence
+
+
+def download_uniprot_pfam_sequences(pfam_id: str = PFAM_ID) -> str:
+    """Download all canonical UniProtKB sequences cross-referenced to a Pfam ID."""
+    query = f"xref:pfam-{pfam_id.upper()}"
+    url = f"{UNIPROT_API}?{urlencode({'query': query, 'format': 'fasta'})}"
+    fasta = fetch_text(url)
+
+    if not fasta.startswith(">"):
+        raise RuntimeError(f"UniProt did not return FASTA data for {query}")
+
+    UNIPROT_OUTPUT_FASTA.write_text(fasta)
+
+    sequence_count = fasta.count("\n>")
+    if fasta.startswith(">"):
+        sequence_count += 1
+
+    print(f"Wrote {sequence_count} UniProt sequences to {UNIPROT_OUTPUT_FASTA}")
+    return fasta
+
+
+def main() -> None:
+    download_pdb_chain()
+    download_uniprot_pfam_sequences()
+
 
 
 if __name__ == "__main__":
