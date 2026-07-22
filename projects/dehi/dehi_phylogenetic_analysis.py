@@ -55,16 +55,13 @@ PFAM_ID = CMD_PFAM_ID
 
 # 3BJX is an experimentally determined DehI structure and provides a useful
 # reference sequence for locating a possible internal duplication boundary.
-PDB_OUTPUT_FASTA = Path(__file__).with_name(f"{PDB_ID}_{CHAIN_ID}.fasta")
-CMD_OUTPUT_FASTA = Path(__file__).with_name(f"uniprot_{CMD_PFAM_ID}.fasta")
+RESULTS_DIR = Path(__file__).with_name("results")
+PDB_OUTPUT_FASTA = RESULTS_DIR / f"{PDB_ID}_{CHAIN_ID}.fasta"
+CMD_OUTPUT_FASTA = RESULTS_DIR / f"uniprot_{CMD_PFAM_ID}.fasta"
 # Retained as a compatibility name for code using the original output constant.
 UNIPROT_OUTPUT_FASTA = CMD_OUTPUT_FASTA
-AHPD_OUTPUT_FASTA = Path(__file__).with_name(
-    f"uniprot_ahpd_{AHPD_INTERPRO_ID}.fasta"
-)
-DEHI_OUTPUT_FASTA = Path(__file__).with_name(
-    f"uniprot_dehi_{DEHI_INTERPRO_ID}.fasta"
-)
+AHPD_OUTPUT_FASTA = RESULTS_DIR / f"uniprot_ahpd_{AHPD_INTERPRO_ID}.fasta"
+DEHI_OUTPUT_FASTA = RESULTS_DIR / f"uniprot_dehi_{DEHI_INTERPRO_ID}.fasta"
 FAMILY_FASTA_FILES = (CMD_OUTPUT_FASTA, AHPD_OUTPUT_FASTA, DEHI_OUTPUT_FASTA)
 CLUSTER_IDENTITY = 0.90
 # Bidirectional coverage over 80% of the longer sequence keeps fragments from
@@ -316,6 +313,7 @@ def main() -> None:
         identity_label(args.cluster_identity)
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     if not args.cluster_only:
         download_pdb_chain()
         download_uniprot_cmd_sequences()
