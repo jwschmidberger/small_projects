@@ -1,15 +1,27 @@
-"""Download protein sequences for this DEHI phylogenetic analysis.
+"""Collect sequences for a CMD/AhpD/DehI evolutionary analysis.
 
-This script can:
+Research question
+-----------------
+Test the hypothesis that DehI-like proteins arose through duplication and
+fusion of a smaller ancestral unit related to proteins in the CMD and/or AhpD
+groups.  The three sequence collections produced here are the input data for
+subsequent domain-boundary analysis, multiple-sequence alignment, and
+phylogenetic reconstruction; this downloader does not itself test the
+hypothesis.
 
-1. Download the amino-acid sequence for chain A of PDB entry 3BJX.
-2. Download all UniProtKB amino-acid sequences matching Pfam family PF02627.
-3. Download AhpD-family sequences using the specific InterPro family IPR004674.
-4. Download DehI-like sequences using the specific InterPro family IPR019714.
+Sequence collections
+--------------------
 
-The AhpD and DehI downloads deliberately use family assignments instead of
-protein-name text, since names are not applied consistently across UniProtKB
-records.
+1. CMD-domain proteins: UniProtKB records matching Pfam PF02627.
+2. AhpD-family proteins: UniProtKB records matching InterPro IPR004674.
+3. DehI-like proteins: UniProtKB records matching InterPro IPR019714.
+4. The sequence of chain A from the DehI reference structure PDB 3BJX.
+
+Database family assignments are used instead of protein-name searches because
+annotation names vary.  Full-length sequences are retained so a downstream
+analysis can compare the N- and C-terminal regions of DehI separately with the
+smaller CMD and AhpD proteins, as required to evaluate a duplication/fusion
+model.
 """
 
 from __future__ import annotations
@@ -23,11 +35,20 @@ from urllib.request import urlopen
 
 PDB_ID = "3BJX"
 CHAIN_ID = "A"
-PFAM_ID = "PF02627"
+# Family identifiers defining the three comparison groups.  PF02627 is the CMD
+# domain; IPR004674 and IPR019714 are the specific AhpD and DehI families.
+CMD_PFAM_ID = "PF02627"
 AHPD_INTERPRO_ID = "IPR004674"
 DEHI_INTERPRO_ID = "IPR019714"
+# Retained as a compatibility name for callers of the original CMD downloader.
+PFAM_ID = CMD_PFAM_ID
+
+# 3BJX is an experimentally determined DehI structure and provides a useful
+# reference sequence for locating a possible internal duplication boundary.
 PDB_OUTPUT_FASTA = Path(__file__).with_name(f"{PDB_ID}_{CHAIN_ID}.fasta")
-UNIPROT_OUTPUT_FASTA = Path(__file__).with_name(f"uniprot_{PFAM_ID}.fasta")
+CMD_OUTPUT_FASTA = Path(__file__).with_name(f"uniprot_{CMD_PFAM_ID}.fasta")
+# Retained as a compatibility name for code using the original output constant.
+UNIPROT_OUTPUT_FASTA = CMD_OUTPUT_FASTA
 AHPD_OUTPUT_FASTA = Path(__file__).with_name(
     f"uniprot_ahpd_{AHPD_INTERPRO_ID}.fasta"
 )
@@ -94,8 +115,12 @@ def download_pdb_chain() -> str:
     return sequence
 
 
-def download_uniprot_pfam_sequences(pfam_id: str = PFAM_ID) -> str:
-    """Download all canonical UniProtKB sequences cross-referenced to a Pfam ID."""
+def download_uniprot_cmd_sequences(pfam_id: str = CMD_PFAM_ID) -> str:
+    """Download the CMD comparison group using its Pfam assignment.
+
+    CMD proteins represent one set of smaller structural relatives against
+    which the two putative halves of DehI can be compared downstream.
+    """
     query = f"xref:pfam-{pfam_id.upper()}"
     url = f"{UNIPROT_API}?{urlencode({'query': query, 'format': 'fasta'})}"
     fasta = fetch_text(url)
@@ -103,14 +128,19 @@ def download_uniprot_pfam_sequences(pfam_id: str = PFAM_ID) -> str:
     if not fasta.startswith(">"):
         raise RuntimeError(f"UniProt did not return FASTA data for {query}")
 
-    UNIPROT_OUTPUT_FASTA.write_text(fasta)
+    CMD_OUTPUT_FASTA.write_text(fasta)
 
     sequence_count = fasta.count("\n>")
     if fasta.startswith(">"):
         sequence_count += 1
 
-    print(f"Wrote {sequence_count} UniProt sequences to {UNIPROT_OUTPUT_FASTA}")
+    print(f"Wrote {sequence_count} CMD-domain sequences to {CMD_OUTPUT_FASTA}")
     return fasta
+
+
+def download_uniprot_pfam_sequences(pfam_id: str = PFAM_ID) -> str:
+    """Backward-compatible name for :func:`download_uniprot_cmd_sequences`."""
+    return download_uniprot_cmd_sequences(pfam_id)
 
 
 def download_uniprot_ahpd_sequences(
@@ -120,6 +150,8 @@ def download_uniprot_ahpd_sequences(
 
     IPR004674 is the AhpD family-level InterPro entry.  It is more specific than
     the CMD domain (PF02627/IPR003779), which also occurs outside AhpD proteins.
+    AhpD proteins provide the second group of smaller candidate relatives for
+    comparison with the putative repeated regions of DehI.
     """
     interpro_id = interpro_id.upper()
     query = f"xref:interpro-{interpro_id}"
@@ -141,7 +173,10 @@ def download_uniprot_dehi_sequences(
     """Download canonical UniProtKB sequences assigned to the DehI family.
 
     IPR019714 is the family-level InterPro entry for configuration-inverting
-    2-haloacid dehalogenase DehI (also represented by Pfam PF10778).
+    2-haloacid dehalogenase DehI (also represented by Pfam PF10778).  These
+    full-length proteins are the proposed duplication/fusion products; a later
+    analysis should infer or define their internal boundary before comparing
+    each region with CMD and AhpD sequences.
     """
     interpro_id = interpro_id.upper()
     query = f"xref:interpro-{interpro_id}"
@@ -159,7 +194,7 @@ def download_uniprot_dehi_sequences(
 
 def main() -> None:
     download_pdb_chain()
-    download_uniprot_pfam_sequences()
+    download_uniprot_cmd_sequences()
     download_uniprot_ahpd_sequences()
     download_uniprot_dehi_sequences()
 
