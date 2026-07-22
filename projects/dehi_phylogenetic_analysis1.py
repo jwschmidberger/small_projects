@@ -5,9 +5,11 @@ This script can:
 1. Download the amino-acid sequence for chain A of PDB entry 3BJX.
 2. Download all UniProtKB amino-acid sequences matching Pfam family PF02627.
 3. Download AhpD-family sequences using the specific InterPro family IPR004674.
+4. Download DehI-like sequences using the specific InterPro family IPR019714.
 
-The AhpD download deliberately uses a family assignment instead of protein-name
-text, since names are not applied consistently across UniProtKB records.
+The AhpD and DehI downloads deliberately use family assignments instead of
+protein-name text, since names are not applied consistently across UniProtKB
+records.
 """
 
 from __future__ import annotations
@@ -23,10 +25,14 @@ PDB_ID = "3BJX"
 CHAIN_ID = "A"
 PFAM_ID = "PF02627"
 AHPD_INTERPRO_ID = "IPR004674"
+DEHI_INTERPRO_ID = "IPR019714"
 PDB_OUTPUT_FASTA = Path(__file__).with_name(f"{PDB_ID}_{CHAIN_ID}.fasta")
 UNIPROT_OUTPUT_FASTA = Path(__file__).with_name(f"uniprot_{PFAM_ID}.fasta")
 AHPD_OUTPUT_FASTA = Path(__file__).with_name(
     f"uniprot_ahpd_{AHPD_INTERPRO_ID}.fasta"
+)
+DEHI_OUTPUT_FASTA = Path(__file__).with_name(
+    f"uniprot_dehi_{DEHI_INTERPRO_ID}.fasta"
 )
 RCSB_API = "https://data.rcsb.org/rest/v1/core"
 UNIPROT_API = "https://rest.uniprot.org/uniprotkb/stream"
@@ -129,10 +135,33 @@ def download_uniprot_ahpd_sequences(
     return fasta
 
 
+def download_uniprot_dehi_sequences(
+    interpro_id: str = DEHI_INTERPRO_ID,
+) -> str:
+    """Download canonical UniProtKB sequences assigned to the DehI family.
+
+    IPR019714 is the family-level InterPro entry for configuration-inverting
+    2-haloacid dehalogenase DehI (also represented by Pfam PF10778).
+    """
+    interpro_id = interpro_id.upper()
+    query = f"xref:interpro-{interpro_id}"
+    url = f"{UNIPROT_API}?{urlencode({'query': query, 'format': 'fasta'})}"
+    fasta = fetch_text(url)
+
+    if not fasta.startswith(">"):
+        raise RuntimeError(f"UniProt did not return FASTA data for {query}")
+
+    DEHI_OUTPUT_FASTA.write_text(fasta)
+    sequence_count = fasta.count("\n>") + 1
+    print(f"Wrote {sequence_count} DehI-family sequences to {DEHI_OUTPUT_FASTA}")
+    return fasta
+
+
 def main() -> None:
     download_pdb_chain()
     download_uniprot_pfam_sequences()
     download_uniprot_ahpd_sequences()
+    download_uniprot_dehi_sequences()
 
 
 
