@@ -1,0 +1,23 @@
+Query         AhpD_double_core_repeat1
+Match_columns 25
+No_of_seqs    4 out of 4
+Neff          1.8
+Searched_HMMs 1
+Date          Thu Sep  3 21:38:20 2026
+Command       hhalign -i /Users/jasonschmidberger/code/small_projects/projects/dehi/results/ahpd_double_core_repeat1.hhm -t /Users/jasonschmidberger/code/small_projects/projects/dehi/results/ahpd_double_core_repeat2.hhm -o /Users/jasonschmidberger/code/small_projects/projects/dehi/results/AhpD_repeat1_vs_repeat2.hhr -Oa3m /Users/jasonschmidberger/code/small_projects/projects/dehi/results/AhpD_repeat1_vs_repeat2.a3m -atab /Users/jasonschmidberger/code/small_projects/projects/dehi/results/AhpD_repeat1_vs_repeat2.tsv 
+
+ No Hit                             Prob E-value P-value  Score    SS Cols Query HMM  Template HMM
+  1 AhpD_double_core_repeat2         0.6   0.091   0.091    9.1   0.0   14    7-20     19-32  (35)
+
+No 1
+>AhpD_double_core_repeat2
+Probab=0.63  E-value=0.091  Score=9.07  Aligned_cols=14  Identities=14%  Similarity=0.430  Sum_probs=7.2  Template_Neff=1.500
+
+Q tr|A0A0E3V6K0|    9 RQEGVTDAELAETI   22 (25)
+Q Consensus         7 ~e~G~T~~EiAE~~   20 (25)
+                      .+.|.+..-|-|++
+T Consensus        19 lqhG~SE~Rif~Ai   32 (35)
+T tr|A0A0E3V6K0|   20 LKHGSSEPRIFDAI   33 (41)
+Confidence            45566655554443
+
+

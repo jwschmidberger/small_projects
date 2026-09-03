@@ -1,0 +1,15 @@
+Query         CMD_compact_120_150_repeat1
+Match_columns 57
+No_of_seqs    135 out of 2388
+Neff          10.5
+Searched_HMMs 1
+Date          Thu Sep  3 21:38:21 2026
+Command       hhalign -i /Users/jasonschmidberger/code/small_projects/projects/dehi/results/cmd_compact_120_150_repeat1.hhm -t /Users/jasonschmidberger/code/small_projects/projects/dehi/results/cmd_compact_120_150_repeat2.hhm -o /Users/jasonschmidberger/code/small_projects/projects/dehi/results/CMD_compact_repeat1_vs_repeat2.hhr -Oa3m /Users/jasonschmidberger/code/small_projects/projects/dehi/results/CMD_compact_repeat1_vs_repeat2.a3m -atab /Users/jasonschmidberger/code/small_projects/projects/dehi/results/CMD_compact_repeat1_vs_repeat2.tsv 
+
+ No Hit                             Prob E-value P-value  Score    SS Cols Query HMM  Template HMM
+  1 CMD_compact_120_150_repeat2      0.1    0.73    0.73    3.1   0.0    1   47-47     23-23  (61)
+
+No 1
+>CMD_compact_120_150_repeat2
+Probab=0.06  E-value=0.73  Score=3.06  Aligned_cols=1  Identities=0%  Similarity=0.000  Sum_probs=0.0  Template_Neff=9.800
+

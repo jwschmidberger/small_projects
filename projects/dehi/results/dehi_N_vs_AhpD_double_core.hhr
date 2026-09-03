@@ -1,0 +1,23 @@
+Query         DehI_N_terminal
+Match_columns 123
+No_of_seqs    68 out of 69
+Neff          5.5
+Searched_HMMs 1
+Date          Thu Sep  3 21:38:23 2026
+Command       hhalign -i /Users/jasonschmidberger/code/small_projects/projects/dehi/results/dehi_N_terminal.hhm -t /Users/jasonschmidberger/code/small_projects/projects/dehi/results/ahpd_double_core.hhm -o /Users/jasonschmidberger/code/small_projects/projects/dehi/results/dehi_N_vs_AhpD_double_core.hhr -Oa3m /Users/jasonschmidberger/code/small_projects/projects/dehi/results/dehi_N_vs_AhpD_double_core.a3m -atab /Users/jasonschmidberger/code/small_projects/projects/dehi/results/dehi_N_vs_AhpD_double_core.tsv 
+
+ No Hit                             Prob E-value P-value  Score    SS Cols Query HMM  Template HMM
+  1 AhpD_double_core_intact          0.2    0.33    0.33   11.7   0.0   19   85-103    86-104 (197)
+
+No 1
+>AhpD_double_core_intact
+Probab=0.18  E-value=0.33  Score=11.69  Aligned_cols=19  Identities=16%  Similarity=0.179  Sum_probs=10.3  Template_Neff=1.700
+
+Q 3BJX             91 YAAGFDDGEIEKVRRVLYA  109 (129)
+Q Consensus        85 ~~~~~~~~~~~~ir~~l~~  103 (123)
+                      .+.|..++|+.++-+....
+T Consensus        86 ~e~G~T~~EiAE~~ActSL  104 (197)
+T tr|A0A0E3V6K0|   85 RQEGVTDAELAETIACTSL  103 (195)
+Confidence            3455666666665544433
+
+
