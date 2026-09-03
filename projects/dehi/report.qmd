@@ -23,8 +23,6 @@ resources:
   - build_dehi_hhsuite_profiles.sh
   - prepare_cmd_ahpd_comparison.py
   - build_cmd_ahpd_hhsuite_profiles.sh
-  - identify_cmd_ahpd_duplications.py
-  - build_cmd_ahpd_duplication_profiles.sh
   - analyse_cmd_monomer_clusters.py
   - build_cmd_monomer_cluster_profiles.sh
   - results/dehi_core_msa.fasta
@@ -52,20 +50,6 @@ resources:
   - results/dehi_N_vs_AhpD.hhr
   - results/dehi_C_vs_AhpD.hhr
   - results/CMD_vs_AhpD.hhr
-  - results/cmd_single_core_seed.hmm
-  - results/cmd_ahpd_duplication_architectures.tsv
-  - results/cmd_double_core.fasta
-  - results/ahpd_double_core.fasta
-  - results/cmd_double_core.hhm
-  - results/ahpd_double_core.hhm
-  - results/CMD_repeat1_vs_repeat2.hhr
-  - results/AhpD_repeat1_vs_repeat2.hhr
-  - results/CMD_compact_repeat1_vs_repeat2.hhr
-  - results/AhpD_compact_repeat1_vs_repeat2.hhr
-  - results/dehi_N_vs_CMD_double_core.hhr
-  - results/dehi_C_vs_CMD_double_core.hhr
-  - results/dehi_N_vs_AhpD_double_core.hhr
-  - results/dehi_C_vs_AhpD_double_core.hhr
   - results/cmd_monomer_cluster_manifest.tsv
   - results/dehi_vs_cmd_monomer_clusters.tsv
   - results/cmd_monomer_clusters/dehi_N_vs_CMD_monomer_017.hhr
@@ -103,13 +87,6 @@ revealed reproducible but sub-threshold signals: the strongest were
 0.001 after a conservative correction across 54 comparisons, but none reaches the usual
 ≥95% HH-suite probability expected for a confident assignment.
 
-A separate architecture analysis found **11 CMD-like and 4 AhpD proteins with
-two non-overlapping core matches**, all 186–210 residues rather than the
-anticipated 120–150 residues. DehI-C versus that intact CMD double-core profile
-reached only **12.95% probability**. Thus the intact monomeric CMD unit is the
-more promising hypothesis in these data, although the relationship remains
-suggestive rather than established.
-
 ::: {.callout-important title="Principal result"}
 The N- and C-terminal profiles align across 108 columns: 88% of the N-terminal
 model and 96% of the C-terminal model. This is a domain-scale match rather than
@@ -143,9 +120,8 @@ The specific question addressed here is:
 > is excluded?
 
 A second, exploratory question asks whether either DehI repeat retains a
-detectable relationship to free-standing carboxymuconolactone decarboxylase
-(CMD)-like or alkyl hydroperoxide reductase D (AhpD) proteins, specifically
-after distinguishing single CMD cores from tandem duplication products.
+detectable relationship to intact, compact carboxymuconolactone decarboxylase
+(CMD)-like proteins or alkyl hydroperoxide reductase D (AhpD) proteins.
 
 ## Analysis design
 
@@ -159,15 +135,12 @@ flowchart LR
     D --> G[C-terminal HHM]
     F --> H[HHalign<br>profile–profile comparison]
     G --> H
-    I[CMD-like<br>PF02627 profile] --> J[Four external<br>comparisons]
+    I[CMD-like<br>PF02627 sequences] --> L[Cluster intact<br>80–119-aa monomers]
+    L --> M[CMD subfamily HHMs]
+    M --> J[External<br>comparisons]
     K[AhpD<br>IPR004674 profile] --> J
     F --> J
     G --> J
-    I --> L[49-state CMD-core HMM]
-    K --> L
-    L --> M[Require two<br>non-overlapping hits]
-    M --> N[Double-core profiles]
-    N --> J
 ```
 
 The workflow deliberately separates computation from presentation. Alignment
@@ -480,113 +453,6 @@ profile diversity (Neff 2.9–3.4) are additional reasons to describe the result
 as **suggestive evidence**, not a family assignment.
 :::
 
-## Duplication-aware CMD/AhpD refinement
-
-### Why length alone is insufficient
-
-Structural work on TTHA0727 showed that the conserved CMD core comprises three
-helices and that an AhpD monomer contains a structural duplication of this
-core. The AhpD trimer consequently corresponds to the hexamer formed by
-single-core CMD-family subunits
-([Nakamura *et al.*, 2006](https://pubmed.ncbi.nlm.nih.gov/16597838/)). This
-provides a mechanistic reason to compare DehI with fused CMD-core duplication
-products. It does not, however, mean that every protein of roughly twice the
-core length is duplicated.
-
-Two complementary tests were therefore applied:
-
-1. An architecture scan required two significant, non-overlapping CMD-core
-   matches in the same protein.
-2. A separate 120–150-residue cohort test asked whether midpoint-split N and C
-   half profiles show the internal similarity expected from duplication.
-
-### Building the single-core detector
-
-The detector was built entirely in the project `uv` environment using
-PyHMMER. From the PF02627 set, 1,316 explicitly CMD-annotated proteins of
-80–119 residues were treated as compact single-copy-like seeds. Structural
-studies place the three-helix CMD core in the C-terminal portion of these
-six-helix proteins, so the C-terminal 55% of each seed was aligned. Columns
-occupied in at least half the sequences defined a **49-state profile HMM**.
-
-Longer CMD-like and AhpD proteins of 120–210 residues were scanned with this
-model. A high-confidence duplication call required:
-
-- two domain matches with independent E-values ≤ 10^-3^;
-- at least 45% coverage of the 49-state model by each match; and
-- no more than 10 residues of overlap between the matches.
-
-These are deliberately conservative sequence criteria. They identify a
-high-confidence subset, not every structural duplication in the superfamily.
-The method and thresholds are versioned in
-[`identify_cmd_ahpd_duplications.py`](identify_cmd_ahpd_duplications.py).
-
-| Group | Candidates scanned | Two-core proteins | Protein lengths | Mean length | Mean repeat-1 length | Mean repeat-2 length |
-|---|---:|---:|---:|---:|---:|---:|
-| CMD-like | 5,748 | 11 | 186–210 | 196.8 | 48.1 | 44.9 |
-| AhpD | 169 | 4 | 191–199 | 195.3 | 25.0 | 37.5 |
-
-: High-confidence sequence-detected CMD-core duplication products.
-{#tbl-double-core-selection}
-
-The shorter AhpD match lengths reflect partial profile coverage at the
-conservative detection threshold; they should not be interpreted as complete
-structural-repeat boundaries. Exact coordinates and per-domain E-values are in
-the [architecture table](results/cmd_ahpd_duplication_architectures.tsv).
-
-### Internal validation of the inferred repeats
-
-The extracted first and second matches were converted into separate HH-suite
-profiles and compared with HHalign.
-
-| Cohort | Probability | E-value | Aligned columns | Identity | Interpretation |
-|---|---:|---:|---:|---:|---|
-| CMD two-core: repeat 1 vs repeat 2 | **98.84%** | **4.8 × 10^-17^** | 40 | 20% | Strong profile support for internal duplication |
-| AhpD two-core: repeat 1 vs repeat 2 | 0.63% | 0.091 | 14 | 14% | Four sequences and partial matches are insufficient for profile validation |
-| CMD 120–150 midpoint halves | 0.06% | 0.73 | 1 | 0% | No cohort-level duplication signal |
-| AhpD 120–150 midpoint halves | 0.43% | 0.14 | 13 | 23% | Only four proteins; no supported signal |
-
-: Tests of internal repeat similarity. {#tbl-repeat-validation}
-
-The strong CMD repeat-1/repeat-2 result validates the architecture detector for
-that subset. Conversely, the large 120–150-aa CMD cohort does **not** behave as
-a family of midpoint-fused homologous repeats. This does not rule out isolated
-compact duplications with shifted or rearranged boundaries, but it shows that
-selecting this whole length class would create a misleading comparison.
-
-### Duplication-aware comparison with DehI halves
-
-The selected proteins were kept intact when building the external profiles;
-the repeat fragments were used only to establish the architecture. This tests
-the proposed correspondence between one intact DehI half and one fused
-double-core CMD/AhpD unit.
-
-| DehI query | Double-core template | Probability | E-value | Score | Aligned columns | Identity |
-|---|---|---:|---:|---:|---:|---:|
-| N-terminal | CMD-like | 0.06% | 0.79 | 8.47 | 9 | 44% |
-| C-terminal | CMD-like | **12.95%** | **0.0022** | **23.49** | **50** | 18% |
-| N-terminal | AhpD | 0.18% | 0.33 | 11.69 | 19 | 16% |
-| C-terminal | AhpD | 1.11% | 0.048 | 16.14 | 59 | 15% |
-
-: HHalign results against intact, sequence-detected double-core proteins.
-{#tbl-duplication-aware-comparison}
-
-The C-terminal DehI/CMD double-core comparison improves substantially over the
-broad CMD result (12.95% versus 0.14% probability) and spans 50 columns.
-Nevertheless, 12.95% remains weak HHalign support, the alignment covers less
-than half of either complete architecture, and only 11 CMD proteins contribute
-to the selected external set. It is therefore an interesting directional
-signal rather than evidence of homology.
-
-::: {.callout-note title="What happened to the expected 120–150-aa fusions?"}
-No 120–150-aa protein passed the conservative two-hit CMD-core scan, and the
-midpoint-split profiles of that length class did not align. The high-confidence
-sequence-detected duplication products in these datasets are instead about
-190–200 residues. Structure-based domain boundaries may recover additional
-compact cases that have diverged beyond recognition by this 49-state sequence
-profile.
-:::
-
 ## Interpretation
 
 Three features make this result supportive of internal homology:
@@ -645,13 +511,12 @@ The following tests would strengthen the evolutionary interpretation:
   and test whether their strongest domain-level matches overlap. A database
   search supplies the calibration and competing alternatives absent from these
   one-template HHalign runs.
-- Build structure-informed profiles for CMD and AhpD, or compare representative
-  structures with Foldseek/DALI. This is the most direct follow-up for the weak
-  but improved DehI-C/CMD double-core alignment and for compact duplications
-  that a sequence-only core HMM may miss.
-- Split or cluster the heterogeneous PF02627 set before alignment. The current
-  annotation and length filters produce an interpretable first-pass profile,
-  but PF02627 spans substantial functional diversity.
+- Build structure-informed profiles for the lead CMD monomer subfamilies and
+  compare representative structures with Foldseek/DALI. This is the most direct
+  follow-up to the suggestive sequence-profile matches.
+- Test the CMD_monomer_015 relationship against independently collected CMD and
+  DehI sequence sets so that subfamily selection and validation use separate
+  data.
 - Map conserved aligned profile positions back onto the 3BJX structure and
   determine whether they occupy corresponding structural environments.
 
@@ -672,12 +537,12 @@ managed by `uv`; HH-suite 3 is required only when regenerating the profiles.
 - [`build_cmd_ahpd_hhsuite_profiles.sh`](build_cmd_ahpd_hhsuite_profiles.sh) —
   align both external families, construct their HHMs, and run all five external
   profile comparisons.
-- [`identify_cmd_ahpd_duplications.py`](identify_cmd_ahpd_duplications.py) —
-  construct the 49-state PyHMMER core detector, require two non-overlapping
-  hits, and extract the inferred repeats.
-- [`build_cmd_ahpd_duplication_profiles.sh`](build_cmd_ahpd_duplication_profiles.sh)
-  — run the duplication detector, validate repeat profiles, and perform the
-  duplication-aware DehI comparisons.
+- [`analyse_cmd_monomer_clusters.py`](analyse_cmd_monomer_clusters.py) — split
+  the compact CMD set into sequence-coherent clusters and summarize all DehI
+  comparisons with multiple-testing correction.
+- [`build_cmd_monomer_cluster_profiles.sh`](build_cmd_monomer_cluster_profiles.sh)
+  — cluster intact CMD monomers, construct subfamily HHMs, and compare each
+  profile with both DehI halves.
 
 ### Alignments and sequences
 
@@ -692,8 +557,6 @@ managed by `uv`; HH-suite 3 is required only when regenerating the profiles.
 - [AhpD A3M](results/ahpd_IPR004674_nr60.a3m)
 - [PF02627 source sequences (nr60)](results/uniprot_PF02627_nr60.fasta)
 - [IPR004674 AhpD source sequences (nr60)](results/uniprot_ahpd_IPR004674_nr60.fasta)
-- [High-confidence CMD double-core proteins](results/cmd_double_core.fasta)
-- [High-confidence AhpD double-core proteins](results/ahpd_double_core.fasta)
 
 ### Profiles and comparison output
 
@@ -711,18 +574,8 @@ managed by `uv`; HH-suite 3 is required only when regenerating the profiles.
 - [DehI-C versus AhpD report](results/dehi_C_vs_AhpD.hhr)
 - [CMD-like versus AhpD report](results/CMD_vs_AhpD.hhr)
 - [External-family filtering summary](results/cmd_ahpd_comparison_sets.tsv)
-- [49-state CMD-core PyHMMER model](results/cmd_single_core_seed.hmm)
-- [Double-core architecture calls and coordinates](results/cmd_ahpd_duplication_architectures.tsv)
-- [CMD double-core HHM](results/cmd_double_core.hhm)
-- [AhpD double-core HHM](results/ahpd_double_core.hhm)
-- [CMD inferred repeat-1 versus repeat-2 report](results/CMD_repeat1_vs_repeat2.hhr)
-- [AhpD inferred repeat-1 versus repeat-2 report](results/AhpD_repeat1_vs_repeat2.hhr)
-- [CMD 120–150 midpoint validation](results/CMD_compact_repeat1_vs_repeat2.hhr)
-- [AhpD 120–150 midpoint validation](results/AhpD_compact_repeat1_vs_repeat2.hhr)
-- [DehI-N versus CMD double-core report](results/dehi_N_vs_CMD_double_core.hhr)
-- [DehI-C versus CMD double-core report](results/dehi_C_vs_CMD_double_core.hhr)
-- [DehI-N versus AhpD double-core report](results/dehi_N_vs_AhpD_double_core.hhr)
-- [DehI-C versus AhpD double-core report](results/dehi_C_vs_AhpD_double_core.hhr)
+- [CMD monomer cluster manifest](results/cmd_monomer_cluster_manifest.tsv)
+- [Ranked DehI-versus-CMD-monomer results](results/dehi_vs_cmd_monomer_clusters.tsv)
 
 To regenerate the derived files locally:
 
@@ -731,6 +584,6 @@ uv run python split_dehi_msa.py
 ./build_dehi_hhsuite_profiles.sh
 uv run python prepare_cmd_ahpd_comparison.py
 ./build_cmd_ahpd_hhsuite_profiles.sh
-./build_cmd_ahpd_duplication_profiles.sh
+./build_cmd_monomer_cluster_profiles.sh
 quarto render report.qmd
 ```
