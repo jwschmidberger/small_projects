@@ -1,6 +1,6 @@
 ---
-title: "Internal duplication and distant family relationships in DehI"
-subtitle: "A 3BJX-guided comparison with CMD-like and AhpD proteins"
+title: "Internal duplication and a possible CMD-family origin of DehI"
+subtitle: "A structure-guided profile-HMM analysis of active-site enclosure and enzyme-fold evolution"
 author: "Jason Schmidberger"
 date: last-modified
 format:
@@ -84,8 +84,18 @@ revealed reproducible but sub-threshold signals: the strongest were
 **DehI-N/CMD_monomer_017 at 87.72% probability** and
 **DehI-N/CMD_monomer_015 at 85.88%**. CMD_monomer_015 also matched DehI-C at
 **80.99% over 64 columns**. The first three corrected P-values remain below
-0.001 after a conservative correction across 54 comparisons, but none reaches the usual
-≥95% HH-suite probability expected for a confident assignment.
+0.001 after a conservative correction across 54 comparisons, but none reaches
+the usual ≥95% HH-suite probability expected for a confident assignment.
+
+If this relationship is confirmed, its importance extends beyond family
+assignment. Compact CMD-family proteins present their functional surface to
+bulk solvent, whereas DehI performs direct hydrolytic dehalogenation in a
+buried active-site cavity formed within its duplicated architecture. Tandem
+duplication and fusion could therefore have internalised an ancestral exposed
+surface, creating a new physicochemical environment and enabling fundamentally
+different catalytic chemistry. This is the central evolutionary hypothesis of
+the report; the present sequence analysis makes it plausible but does not yet
+establish the ancestry, direction, or historical order of those changes.
 
 ::: {.callout-important title="Principal result"}
 The N- and C-terminal profiles align across 108 columns: 88% of the N-terminal
@@ -99,6 +109,15 @@ The monomer-subfamily analysis supplies a credible DehI-to-CMD lead, especially
 CMD_monomer_015, but does **not yet establish** that relationship. Independent
 profile-database and structure-based tests are needed before treating it as a
 positive family assignment.
+:::
+
+::: {.callout-note title="Why the possible CMD relationship matters"}
+The proposed transition is not simply a change in substrate specificity. It
+would couple internal duplication and fusion to **active-site enclosure**:
+an ancestrally solvent-exposed CMD-like surface would become part of a buried,
+asymmetric reaction chamber in DehI. That change could alter water organisation,
+electrostatics, residue pK~a~ values, substrate orientation, and halide-leaving
+group stabilisation simultaneously.
 :::
 
 ## Biological question
@@ -122,6 +141,97 @@ The specific question addressed here is:
 A second, exploratory question asks whether either DehI repeat retains a
 detectable relationship to intact, compact carboxymuconolactone decarboxylase
 (CMD)-like proteins or alkyl hydroperoxide reductase D (AhpD) proteins.
+
+## Evolutionary hypothesis: from exposed surface to buried active site
+
+### The structural transition
+
+The possible CMD-family connection is biologically consequential because the
+same local fold would operate in two very different physical settings. Compact
+CMD/AhpD-like proteins are small all-α units in which the relevant binding or
+catalytic region remains accessible from bulk solvent. The structure of the
+compact CMD-family member TTHA0727 identified a solvent-accessible cleft as its
+putative small-molecule binding site
+([Ito *et al.*, 2006](https://doi.org/10.1110/ps.062148506)). In a structurally
+related AhpD-like protein, the catalytic cysteines and adjacent surface cavity
+remain externally accessible in both the monomer and oligomer
+([Nunn *et al.*, 2011](https://pmc.ncbi.nlm.nih.gov/articles/PMC3141380/)).
+
+DehI presents the opposite biochemical context. Its two internally homologous
+regions pack into a pseudo-dimer surrounding a buried active-site cavity. The
+3BJX structure places the proposed water-activating Asp189 in this enclosed
+site, supporting direct nucleophilic attack on either substrate enantiomer
+([Schmidberger *et al.*, 2008](https://doi.org/10.1016/j.jmb.2008.02.035)).
+
+```{mermaid}
+flowchart LR
+    A[Compact CMD-family unit<br>functional surface exposed] -->|Internal tandem<br>duplication and fusion| B[Two homologous units<br>in one polypeptide]
+    B --> C[Asymmetric packing<br>ancestral surface internalised]
+    C --> D[Buried composite cavity<br>new water, electrostatics,<br>and access pathways]
+    D --> E[Selection and refinement<br>DehI dehalogenase chemistry]
+```
+
+: Proposed surface-to-cavity evolutionary transition. The first connection is
+supported by the internal repeat homology and suggestive CMD-family profile
+matches; the detailed intermediate states remain hypothetical.
+
+In this model, each duplicated unit need not adopt an entirely unrelated local
+fold. The innovation occurs when fusion and subsequent packing change the
+*context* of the conserved fold. A previously exposed surface becomes an
+interdomain interface and reaction chamber, potentially changing several
+catalytically important properties at once:
+
+- solvent and water organisation around the reacting centre;
+- local electrostatics and catalytic-residue pK~a~ values;
+- substrate orientation and residence time;
+- exclusion of non-productive bulk water; and
+- stabilisation and release of the halide leaving group.
+
+The two copies could then diverge asymmetrically. The C-terminal repeat could
+specialise in water activation and catalytic chemistry, while the N-terminal
+repeat increasingly contributes enclosure, substrate positioning, access
+control, and structural support. This would convert duplicated structural
+symmetry into a functionally asymmetric enzyme.
+
+### Evolutionary importance and fitness
+
+This would be an unusually substantial evolutionary transition: duplication
+and fusion would connect a new overall topology, active-site burial, and new
+chemistry rather than merely retuning an existing exposed pocket. It also
+offers a plausible route by which a large structural mutation could create a
+weak new activity in relatively few steps. The first fused protein would not
+need modern DehI efficiency; it would need only enough additional metabolic
+flux to improve fitness under haloacid exposure, after which selection could
+refine enclosure and catalysis.
+
+An immediate selective advantage is plausible but cannot be reconstructed from
+the present sequences alone. Initial retention might also have been assisted by
+ancestral catalytic promiscuity, improved stability or assembly, increased
+dosage, or a period of effectively neutral persistence. Experimental studies
+of other enzyme families show that weak ancestral side activities can become
+the principal functions of post-duplication descendants
+([Voordeckers *et al.*, 2012](https://doi.org/10.1371/journal.pbio.1001446)).
+
+The ecological context supports selection for the *mature* activity without
+dating the original innovation. PP3 was isolated under growth selection on
+2,2-dichloropropionic acid, and its `dehI` family gene lies on the mobile DEH
+element with its regulator, flanked by insertion sequences
+([Webster *et al.*, 2025](https://doi.org/10.1128/mra.00089-25)). Horizontal
+transfer could therefore have delivered an already functional DehI enzyme to
+PP3, where haloacid utilisation supplied an immediate advantage, even if the
+deeper duplication-and-fusion event occurred elsewhere.
+
+### Evidence boundaries
+
+| Claim | Current evidence | Status |
+|---|---|---|
+| The two DehI regions share common ancestry | Near-identical repeat folds plus 99.54% HHalign probability across 108 columns | **Strongly supported** |
+| DehI is related to compact CMD-family proteins | Three related CMD subfamily profiles give 74.52–87.72% probability; cluster 015 matches both DehI halves | **Suggestive** |
+| Duplication and fusion internalised an exposed CMD-like surface | Structurally coherent with exposed CMD-family sites and the buried DehI cavity | **Testable model** |
+| The ancestor performed modern γ-CMD chemistry | Lead CMD proteins are family annotations rather than experimentally verified γ-CMD enzymes | **Not established** |
+| The fused ancestor immediately improved fitness through dehalogenation | Consistent with possible basal activity and later haloacid selection, but intermediates are unknown | **Plausible, not demonstrated** |
+
+: Separation of observation from evolutionary inference. {#tbl-evidence-boundaries}
 
 ## Analysis design
 
@@ -465,9 +575,9 @@ Three features make this result supportive of internal homology:
    conserved residue patterns remain detectable when information is combined
    across 69 family members.
 
-Together with the near-identical structural folds reported for 3BJX, this is
-consistent with the proposal that an ancestral domain duplicated in tandem and
-the two copies subsequently diverged while remaining fused in DehI.
+Together with the near-identical structural folds reported for 3BJX, this
+strongly supports tandem duplication of an ancestral domain followed by
+divergence of the two copies within DehI.
 
 The external comparisons do not yet identify the ancestral domain definitively.
 However, separating intact CMD monomers into coherent subfamilies changes the
@@ -479,12 +589,32 @@ DehI N/C homology and suggestive, but not yet conclusive, evidence connecting
 those repeats to a subset of monomeric CMD proteins.** No comparable
 sequence-only support was recovered for AhpD.
 
+If that CMD-family connection is validated, the evolutionary implication is
+more substantial than ordinary substrate or catalytic diversification.
+Duplication and fusion would have converted an ancestrally solvent-exposed
+functional surface into a buried interdomain cavity. The local fold could be
+retained while its biochemical context changed completely: solvent access,
+water organisation, electrostatics, substrate geometry, and leaving-group
+stabilisation would all become properties of the newly formed composite site.
+Subsequent asymmetric divergence could then concentrate direct hydrolytic
+catalysis in the C-terminal repeat while the N-terminal repeat increasingly
+provided enclosure and substrate positioning.
+
+The conservative synthesis is therefore: **DehI is strongly supported as an
+internally duplicated enzyme, and a subset of compact CMD-family proteins is
+the leading candidate for the ancestral fold. If this ancestry is confirmed,
+DehI would represent an unusual surface-to-cavity transition in which
+duplication and fusion created a new overall topology and a new catalytic
+microenvironment capable of different chemistry.**
+
 ::: {.callout-note title="What the result does not prove"}
 HHalign measures compatibility between two profile models. It does not by
-itself date the duplication, identify the ancestral free-standing family, or
-exclude every alternative evolutionary scenario. Structural correspondence,
-taxonomic distribution, conserved catalytic residues, and comparisons with
-external families provide independent evidence.
+itself establish the direction of ancestry, show that the ancestral protein
+performed modern γ-CMD chemistry, reconstruct the duplication-and-fusion
+intermediates, or demonstrate when dehalogenase activity first became
+selectively useful. Those questions require structural surface mapping,
+phylogenetic and genomic context, ancestral reconstruction, and biochemical
+testing.
 :::
 
 ### Statistical qualification
@@ -514,11 +644,20 @@ The following tests would strengthen the evolutionary interpretation:
 - Build structure-informed profiles for the lead CMD monomer subfamilies and
   compare representative structures with Foldseek/DALI. This is the most direct
   follow-up to the suggestive sequence-profile matches.
+- Superpose representative lead-cluster CMD structures or AlphaFold models on
+  each DehI repeat, then quantify solvent-accessible surface area at homologous
+  positions. The critical prediction is that a CMD-exposed surface maps to the
+  buried DehI interdomain cavity.
+- Map aligned CMD/DehI positions onto the 3BJX active site and distinguish
+  residues inherited from the ancestral fold from residues recruited after
+  duplication for water activation, substrate binding, and halide handling.
 - Test the CMD_monomer_015 relationship against independently collected CMD and
   DehI sequence sets so that subfamily selection and validation use separate
   data.
-- Map conserved aligned profile positions back onto the 3BJX structure and
-  determine whether they occupy corresponding structural environments.
+- Reconstruct plausible pre-duplication and early fused ancestral proteins.
+  Structural modelling followed by biochemical testing could ask whether
+  fusion alone creates a cavity or basal haloacid activity before extensive
+  sequence optimisation.
 
 ## Reproducibility and downloads
 
