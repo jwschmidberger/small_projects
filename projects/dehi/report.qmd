@@ -19,6 +19,9 @@ execute:
   enabled: false
 resources:
   - dehi_3BJX_secondary_structure.png
+  - cmd_2CWQ_assembly1.jpeg
+  - ahpd_1KNC_assembly1.jpeg
+  - dehi_3BJX_assembly1.jpeg
   - split_dehi_msa.py
   - build_dehi_hhsuite_profiles.sh
   - prepare_cmd_ahpd_comparison.py
@@ -97,6 +100,13 @@ different catalytic chemistry. This is the central evolutionary hypothesis of
 the report; the present sequence analysis makes it plausible but does not yet
 establish the ancestry, direction, or historical order of those changes.
 
+CMD/AhpD structures provide a relevant but deliberately separate precedent.
+The compact CMD-family protein TTHA0727 forms a six-core homohexamer, whereas
+trimeric AhpD packages six related cores as two core-like units within each
+chain. This correspondence shows that duplication and fusion have redistributed
+CMD-like cores between quaternary and tertiary structure in this broader group.
+It does **not** make AhpD an ancestor of, or an intermediate toward, DehI.
+
 ::: {.callout-important title="Principal result"}
 The N- and C-terminal profiles align across 108 columns: 88% of the N-terminal
 model and 96% of the C-terminal model. This is a domain-scale match rather than
@@ -144,14 +154,49 @@ detectable relationship to intact, compact carboxymuconolactone decarboxylase
 
 ## Evolutionary hypothesis: from exposed surface to buried active site
 
+### Structural precedent for duplication and fusion
+
+The oligomeric architectures of compact CMD-family proteins and AhpD provide
+precedent for duplication and fusion within the broader structural group. The
+compact CMD-family member TTHA0727 ([PDB 2CWQ](https://www.rcsb.org/structure/2CWQ))
+forms a D~3~-symmetric homohexamer built from six single-core polypeptide chains.
+By contrast, *Mycobacterium tuberculosis* AhpD
+([PDB 1KNC](https://www.rcsb.org/structure/1KNC)) is a homotrimer whose subunit
+contains two structurally related core-like units. Structural comparison shows
+that the AhpD trimer and compact CMD hexamer therefore contain an equivalent
+six-core arrangement, with true two-fold relationships between separate CMD
+chains replaced by intrachain pseudo-dyads in AhpD
+([Ito *et al.*, 2006](https://pmc.ncbi.nlm.nih.gov/articles/PMC2242516/);
+[Andreeva *et al.*, 2007](https://doi.org/10.1093/nar/gkl746)).
+
+This is evidence for an accessible *type of evolutionary operation*: related
+CMD-like cores can be duplicated and fused, transferring structural repetition
+from oligomeric assembly into a single polypeptide. It is not evidence that
+AhpD lies on a CMD-to-DehI trajectory, nor that any particular oligomer was a
+stable intermediate in DehI evolution. The DehI proposal below is an
+independent duplication-and-fusion hypothesis whose distinctive consequence
+would be active-site enclosure and formation of the knotted architecture.
+
+::: {#fig-assembly-comparison layout-ncol=3}
+![Compact CMD-family TTHA0727 homohexamer ([2CWQ](https://www.rcsb.org/structure/2CWQ)).](cmd_2CWQ_assembly1.jpeg){fig-alt="Ribbon representation of the six-chain TTHA0727 biological assembly, with each chain in a different colour."}
+
+![AhpD homotrimer ([1KNC](https://www.rcsb.org/structure/1KNC)).](ahpd_1KNC_assembly1.jpeg){fig-alt="Ribbon representation of the three-chain AhpD biological assembly, with each chain in a different colour."}
+
+![DehI homodimer ([3BJX](https://www.rcsb.org/structure/3BJX)).](dehi_3BJX_assembly1.jpeg){fig-alt="Ribbon representation of the two-chain DehI biological assembly, with each chain in a different colour."}
+
+Biological assemblies illustrating how related structural repetition can be
+packaged at different levels. These RCSB PDB entry images are shown in
+independent orientations and are not a structural superposition.
+:::
+
 ### The structural transition
 
 The possible CMD-family connection is biologically consequential because the
 same local fold would operate in two very different physical settings. Compact
-CMD/AhpD-like proteins are small all-α units in which the relevant binding or
-catalytic region remains accessible from bulk solvent. The structure of the
-compact CMD-family member TTHA0727 identified a solvent-accessible cleft as its
-putative small-molecule binding site
+CMD-family proteins are small all-α units in which the relevant binding or
+catalytic region remains accessible from bulk solvent. The structure of
+TTHA0727 identified a solvent-accessible cleft as its putative small-molecule
+binding site
 ([Ito *et al.*, 2006](https://doi.org/10.1110/ps.062148506)). In a structurally
 related AhpD-like protein, the catalytic cysteines and adjacent surface cavity
 remain externally accessible in both the monomer and oligomer
@@ -165,15 +210,21 @@ site, supporting direct nucleophilic attack on either substrate enantiomer
 
 ```{mermaid}
 flowchart LR
-    A[Compact CMD-family unit<br>functional surface exposed] -->|Internal tandem<br>duplication and fusion| B[Two homologous units<br>in one polypeptide]
-    B --> C[Asymmetric packing<br>ancestral surface internalised]
-    C --> D[Buried composite cavity<br>new water, electrostatics,<br>and access pathways]
-    D --> E[Selection and refinement<br>DehI dehalogenase chemistry]
+    subgraph P[Documented structural precedent]
+      A[Compact CMD-family hexamer<br>six single-core chains] -->|Duplication and fusion<br>within the broader group| B[AhpD trimer<br>two related cores per chain]
+    end
+    subgraph H[Independent DehI hypothesis]
+      C[Compact CMD-like ancestral unit<br>functional surface exposed] -->|Tandem duplication<br>and fusion| D[Two homologous units<br>in one polypeptide]
+      D --> E[Asymmetric packing<br>ancestral surface internalised]
+      E --> F[Buried composite cavity<br>new biochemical context]
+      F --> G[DehI dehalogenase<br>chemistry]
+    end
 ```
 
-: Proposed surface-to-cavity evolutionary transition. The first connection is
-supported by the internal repeat homology and suggestive CMD-family profile
-matches; the detailed intermediate states remain hypothetical.
+: Duplication and fusion in CMD/AhpD establish structural precedent, not a
+lineage leading through AhpD. The DehI surface-to-cavity transition is a
+separate hypothesis supported by strong internal-repeat homology and suggestive
+CMD-family profile matches; its intermediate states remain unknown.
 
 In this model, each duplicated unit need not adopt an entirely unrelated local
 fold. The innovation occurs when fusion and subsequent packing change the
@@ -197,12 +248,11 @@ symmetry into a functionally asymmetric enzyme.
 
 This would be an unusually substantial evolutionary transition: duplication
 and fusion would connect a new overall topology, active-site burial, and new
-chemistry rather than merely retuning an existing exposed pocket. It also
-offers a plausible route by which a large structural mutation could create a
-weak new activity in relatively few steps. The first fused protein would not
-need modern DehI efficiency; it would need only enough additional metabolic
-flux to improve fitness under haloacid exposure, after which selection could
-refine enclosure and catalysis.
+chemistry rather than merely retuning an existing exposed pocket. The
+CMD/AhpD oligomeric comparison establishes that duplication and fusion are
+structurally precedented in the group, but it does not identify a viable
+intermediate or show how dehalogenase activity emerged. Those questions remain
+independent of the architectural precedent.
 
 An immediate selective advantage is plausible but cannot be reconstructed from
 the present sequences alone. Initial retention might also have been assisted by
@@ -226,6 +276,7 @@ deeper duplication-and-fusion event occurred elsewhere.
 | Claim | Current evidence | Status |
 |---|---|---|
 | The two DehI regions share common ancestry | Near-identical repeat folds plus 99.54% HHalign probability across 108 columns | **Strongly supported** |
+| CMD-core duplication and fusion have precedent in the broader CMD/AhpD structural group | Six single-core chains in the TTHA0727 hexamer correspond to two related cores per chain in the AhpD trimer | **Supported structural precedent; not a direct lineage** |
 | DehI is related to compact CMD-family proteins | Three related CMD subfamily profiles give 74.52–87.72% probability; cluster 015 matches both DehI halves | **Suggestive** |
 | Duplication and fusion internalised an exposed CMD-like surface | Structurally coherent with exposed CMD-family sites and the buried DehI cavity | **Testable model** |
 | The ancestor performed modern γ-CMD chemistry | Lead CMD proteins are family annotations rather than experimentally verified γ-CMD enzymes | **Not established** |
@@ -579,6 +630,13 @@ Together with the near-identical structural folds reported for 3BJX, this
 strongly supports tandem duplication of an ancestral domain followed by
 divergence of the two copies within DehI.
 
+The compact-CMD hexamer/AhpD trimer correspondence adds a useful, bounded
+observation: duplication and fusion of CMD-like cores has precedent within the
+broader structural group, and homologous cores can be redistributed between
+quaternary and tertiary organization. This comparison supplies plausibility
+for the evolutionary operation itself. It does not place AhpD on the path to
+DehI and is not used here to infer a stable DehI intermediate.
+
 The external comparisons do not yet identify the ancestral domain definitively.
 However, separating intact CMD monomers into coherent subfamilies changes the
 picture: three related CMD profiles give probabilities of 74.52–87.72%, and
@@ -611,10 +669,10 @@ microenvironment capable of different chemistry.**
 HHalign measures compatibility between two profile models. It does not by
 itself establish the direction of ancestry, show that the ancestral protein
 performed modern γ-CMD chemistry, reconstruct the duplication-and-fusion
-intermediates, or demonstrate when dehalogenase activity first became
-selectively useful. Those questions require structural surface mapping,
-phylogenetic and genomic context, ancestral reconstruction, and biochemical
-testing.
+intermediates, place AhpD on the DehI lineage, or demonstrate when
+dehalogenase activity first became selectively useful. Those questions require
+structural surface mapping, phylogenetic and genomic context, ancestral
+reconstruction, and biochemical testing.
 :::
 
 ### Statistical qualification
