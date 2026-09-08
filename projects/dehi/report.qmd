@@ -6,6 +6,7 @@ date: last-modified
 format:
   html:
     theme: cosmo
+    css: report.css
     toc: true
     toc-depth: 3
     code-fold: true
@@ -18,6 +19,7 @@ format:
 execute:
   enabled: false
 resources:
+  - report.css
   - dehi_3BJX_secondary_structure.png
   - cmd_2CWQ_assembly1.jpeg
   - ahpd_1KNC_assembly1.jpeg
@@ -208,23 +210,30 @@ regions pack into a pseudo-dimer surrounding a buried active-site cavity. The
 site, supporting direct nucleophilic attack on either substrate enantiomer
 ([Schmidberger *et al.*, 2008](https://doi.org/10.1016/j.jmb.2008.02.035)).
 
-```{mermaid}
-flowchart LR
-    subgraph P[Documented structural precedent]
-      A[Compact CMD-family hexamer<br>six single-core chains] -->|Duplication and fusion<br>within the broader group| B[AhpD trimer<br>two related cores per chain]
-    end
-    subgraph H[Independent DehI hypothesis]
-      C[Compact CMD-like ancestral unit<br>functional surface exposed] -->|Tandem duplication<br>and fusion| D[Two homologous units<br>in one polypeptide]
-      D --> E[Asymmetric packing<br>ancestral surface internalised]
-      E --> F[Buried composite cavity<br>new biochemical context]
-      F --> G[DehI dehalogenase<br>chemistry]
-    end
-```
-
-: Duplication and fusion in CMD/AhpD establish structural precedent, not a
-lineage leading through AhpD. The DehI surface-to-cavity transition is a
-separate hypothesis supported by strong internal-repeat homology and suggestive
-CMD-family profile matches; its intermediate states remain unknown.
+<div class="evolution-comparison" role="group" aria-label="Comparison of the documented CMD and AhpD structural precedent with the independent DehI evolutionary hypothesis">
+  <section class="evolution-card precedent-card">
+    <h4>Documented structural precedent</h4>
+    <div class="evolution-step">Compact CMD-family hexamer<br><small>six single-core chains</small></div>
+    <div class="evolution-arrow" aria-hidden="true">↓</div>
+    <div class="evolution-label">duplication and fusion in the broader group</div>
+    <div class="evolution-arrow" aria-hidden="true">↓</div>
+    <div class="evolution-step">AhpD trimer<br><small>two related cores per chain</small></div>
+    <p class="evolution-status"><strong>Supports:</strong> precedent for the architectural operation.<br><strong>Does not imply:</strong> an AhpD-to-DehI lineage.</p>
+  </section>
+  <section class="evolution-card hypothesis-card">
+    <h4>Independent DehI hypothesis</h4>
+    <div class="evolution-step">Compact CMD-like ancestral unit<br><small>functional surface exposed</small></div>
+    <div class="evolution-arrow" aria-hidden="true">↓</div>
+    <div class="evolution-label">tandem duplication and fusion</div>
+    <div class="evolution-arrow" aria-hidden="true">↓</div>
+    <div class="evolution-step">Two homologous units in one chain</div>
+    <div class="evolution-arrow" aria-hidden="true">↓</div>
+    <div class="evolution-step">Asymmetric packing and surface internalisation</div>
+    <div class="evolution-arrow" aria-hidden="true">↓</div>
+    <div class="evolution-step">Buried composite cavity and DehI chemistry</div>
+    <p class="evolution-status"><strong>Status:</strong> testable hypothesis; intermediate states remain unknown.</p>
+  </section>
+</div>
 
 In this model, each duplicated unit need not adopt an entirely unrelated local
 fold. The innovation occurs when fusion and subsequent packing change the
@@ -580,6 +589,43 @@ implemented in
 : Highest-scoring DehI comparisons among the 27 intact CMD monomer profiles.
 The P × 54 column is a conservative Bonferroni correction across both halves
 and all retained clusters. {#tbl-cmd-monomer-leads}
+
+### Representative monomer-focused alignment
+
+The DehI-C/CMD_monomer_015 alignment is the most informative single alignment
+to display. DehI-N/CMD_monomer_017 has the highest probability, but its match
+is only 42 columns long. The cluster-015 C-terminal match spans 64 columns and,
+importantly, the same CMD profile also matches the homologous DehI N-terminal
+repeat. It therefore exposes the sequence-level basis of the most coherent
+external-family lead.
+
+| Metric | Value |
+|---|---:|
+| HHalign probability | 80.99% |
+| Pairwise P-value | 1.2 × 10^-5^ |
+| P × 54 | 6.48 × 10^-4^ |
+| Aligned columns | 64 |
+| Direct identity | 23% |
+| DehI-C / CMD coverage | 57% / 60% |
+| Sum of posterior probabilities | 47.6 |
+
+: DehI-C versus CMD_monomer_015 profile-alignment summary.
+
+```text
+Q 3BJX            2 ATKASTEVQGLLKRVADLHYHHGPASDFQALANWPKVLQIVTDEvLAPVARTEQYDAKSRELVTRARE 69
+Q Consensus       2 ~~~~~~~~~~l~~dI~~~h~~~~v~SdYR~LA~wP~~L~~~W~~.LkP~i~s~~y~~~~~~l~~~A~~ 68
+                    +++++.+.+.+|+.|++.+|+-  +-.||..|+-|..|. .|.. +.-.+........-.+.+..|..
+T Consensus       9 ~~~a~~~s~~ll~a~~~~~G~v--PNm~~~~A~SP~~L~-~~l~.l~~~~~~g~L~~k~re~IaLavs 72
+T A0ABP8DVF7      9 LDDAPAGTQRILDNVGAQFGFV--PNMFRTIASNPTVLE-AVTT.LQGTMSR-VLDAKTRHSIALAVS 71
+Confidence          4678999999999999999973  558999999999886 5777 76666665555555554444443
+```
+
+The long run of high posterior-confidence positions shows that the score does
+not arise from one isolated motif. Nevertheless, this remains a partial-profile
+match with 80.99% HH-suite probability, below the conventional high-confidence
+range. It is displayed as the evidence underlying the hypothesis, not as proof
+of CMD-family ancestry. The complete, unedited output is available in the
+[raw HHalign result](results/cmd_monomer_clusters/dehi_C_vs_CMD_monomer_015.hhr).
 
 These results are much stronger than the pooled CMD profile, showing that
 subfamily stratification was important. CMD_monomer_015 is especially
